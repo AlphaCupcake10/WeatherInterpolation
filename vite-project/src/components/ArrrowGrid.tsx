@@ -11,12 +11,12 @@ function ArrowGrid() {
     const [latlngs, setLatlngs] = useState<number[][]>([]);
     const { arrowSize , divisions } = useControls({
         arrowSize: {
-          value: 1.5,
+          value: 2,
           min: .1,
           max: 5,
         },
         divisions: {
-            value: 16,
+            value: 24,
             min: 1,
             max: 32,
             step:1
