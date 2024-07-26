@@ -1,0 +1,15 @@
+[
+    {
+        "status": "200",
+        "message": "",
+        "device_type": 1,
+        "locality_weather_data": {
+          "temperature": 25.68,
+          "humidity": 25.81,
+          "wind_speed": 1.15,
+          "wind_direction": 90,
+          "rain_intensity": 0,
+          "rain_accumulation": 0.4
+        }
+    }
+]
