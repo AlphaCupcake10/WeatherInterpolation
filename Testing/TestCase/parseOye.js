@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const filePath = 'D:\\Users\\AlphaCupcake10\\Desktop\\asd\\oye.txt'; // Replace with the actual file path
+const filePath = `D:\\Creative\\WebDev\\Websites\\WeatherInterpolation\\Testing\\TestCase\\oye.txt`; // Replace with the actual file path
 
 fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
@@ -31,5 +31,5 @@ fs.readFile(filePath, 'utf8', (err, data) => {
 
     console.log(records);
     //write to json file
-    fs.writeFileSync('D:\\Users\\AlphaCupcake10\\Desktop\\asd\\oye.json', JSON.stringify(records, null, 2));
+    fs.writeFileSync('D:\\Creative\\WebDev\\Websites\\WeatherInterpolation\\Testing\\TestCase\\oye.json', JSON.stringify(records, null, 2));
 });

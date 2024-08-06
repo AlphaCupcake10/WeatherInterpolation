@@ -41,7 +41,7 @@ function App() {
             <MapContainer
               ref={setMap}
               style={{ height: "100%",width:"100%", zIndex: 0 }}
-              center={[28.476863, 77.095934]}
+              center={[28.586854, 77.390832]}
               zoom={15}
               scrollWheelZoom={false}
             >

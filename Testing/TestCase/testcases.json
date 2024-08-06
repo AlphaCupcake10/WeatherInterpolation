@@ -1,0 +1,25 @@
+[
+  [
+    {
+      "label": "Delhi NCR Ghitorni",
+      "localityId": "ZWL009925",
+      "latitude": 28.486412,
+      "longitude": 77.125366,
+      "deviceType": 1
+    },
+    {
+      "label": "Delhi NCR Sector 24",
+      "localityId": "ZWL009638",
+      "latitude": 28.497419,
+      "longitude": 77.09098,
+      "deviceType": 1
+    },
+    {
+      "label": "Delhi NCR Sector 23",
+      "localityId": "ZWL008476",
+      "latitude": 28.50908,
+      "longitude": 77.057138,
+      "deviceType": 1
+    }
+  ]
+]
