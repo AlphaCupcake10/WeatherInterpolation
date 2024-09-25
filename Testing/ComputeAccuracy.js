@@ -11,6 +11,27 @@ const fs = require('fs');
 //     rain_intensity: number;
 //     rain_accumulation: number;
 // }
+
+function parseCSV(url)
+{
+    const result = {};
+    fs.readFileSync(url, 'utf8').split('\n').forEach((line) => {
+        const [city_name,locality_name,device_date_time,rain_intensity,rain_accumulation,humidity,temperature,wind_direction,wind_speed] = line.split(',');
+        result[device_date_time] = {
+            city_name,
+            locality_name,
+            device_date_time,
+            rain_intensity: parseFloat(rain_intensity),
+            rain_accumulation: parseFloat(rain_accumulation),
+            humidity: parseFloat(humidity),
+            temperature: parseFloat(temperature),
+            wind_direction: parseFloat(wind_direction),
+            wind_speed: parseFloat(wind_speed),
+        };
+    });
+
+    return result;
+}
 function interpolateWeatherData(coords,localStationsData)
 {
     function weightFunction(dx,dy)
@@ -28,6 +49,7 @@ function interpolateWeatherData(coords,localStationsData)
     let rain_intensity = 0;
     let rain_accumulation = 0;
 
+    
     let totalWeight = 0;
     for(let i = 0; i < localStationsData.length; i++){
         let station = localStationsData[i];
@@ -40,6 +62,7 @@ function interpolateWeatherData(coords,localStationsData)
         rain_intensity += station?.rain_intensity * weight;
         rain_accumulation += station?.rain_accumulation * weight;
     }
+
 
     temperature /= totalWeight;
     humidity /= totalWeight;
@@ -59,95 +82,74 @@ function interpolateWeatherData(coords,localStationsData)
 }
  
 
-const testcaseLocations = [
-    {
-      "label": "Delhi NCR Ghitorni",
-      "localityId": "ZWL009925",
-      "latitude": 28.486412,
-      "longitude": 77.125366,
-      "deviceType": 1
-    },
-    {
-      "label": "Delhi NCR Sector 24",
-      "localityId": "ZWL009638",
-      "latitude": 28.497419,
-      "longitude": 77.09098,
-      "deviceType": 1
-    },
-    {
-      "label": "Delhi NCR Sector 23",
-      "localityId": "ZWL008476",
-      "latitude": 28.50908,
-      "longitude": 77.057138,
-      "deviceType": 1
-    }
-];
-
-
-//read from json file
-const A = JSON.parse(fs.readFileSync('Testing/WeatherData/Ghitorni_20240606_20240805.json', 'utf8'));
-const B = JSON.parse(fs.readFileSync('Testing/WeatherData/Sector24_20240606_20240805.json', 'utf8'));
-const C = JSON.parse(fs.readFileSync('Testing/WeatherData/Sector23_20240606_20240805.json', 'utf8'));
-
-const coords = [testcaseLocations[1].latitude,testcaseLocations[1].longitude];
-
-const interpolated = [];
-const actual = [];
-
-const sampleCount = 200;
-
-console.log("Sample Count:",sampleCount);
-
-for(let i = 0 ; i < sampleCount ; i ++)
-{
-    let a = A[i];
-    let b = B[i];
-    let c = C[i];
-
-    if(!a || !b || !c)
-    {
-        console.log(i-2);
-        break;   
-    }
-
-    const localStationsData = [
-        {
-            label: "Ghitorni",
-            latitude: testcaseLocations[0].latitude,
-            longitude: testcaseLocations[0].longitude,
-            temperature: a.temperature,
-            humidity: a.humidity,
-            wind_speed: a.wind_speed,
-            wind_direction: a.wind_direction,
-            rain_intensity: a.rain_intensity,
-            rain_accumulation: a.rain_accumulation
-        },
-        {
-            label: "Sector 23",
-            latitude: testcaseLocations[2].latitude,
-            longitude: testcaseLocations[2].longitude,
-            temperature: c.temperature,
-            humidity: c.humidity,
-            wind_speed: c.wind_speed,
-            wind_direction: c.wind_direction,
-            rain_intensity: c.rain_intensity,
-            rain_accumulation: c.rain_accumulation
-        }
-    ];
-
-    interpolated.push(interpolateWeatherData(coords,localStationsData));
-    actual.push({
-        temperature: parseFloat(b.temperature),
-        humidity: parseFloat(b.humidity),
-        wind_speed: parseFloat(b.wind_speed),
-        wind_direction: parseFloat(b.wind_direction),
-        rain_intensity: parseFloat(b.rain_intensity),
-        rain_accumulation: parseFloat(b.rain_accumulation)
-    });
+const destLocation =  {
+    "label": "Delhi NCR Sector 27",
+    "localityId": "ZWL009706",
+    "latitude": 28.46526,
+    "longitude": 77.085742,
 }
 
-console.log(actual)
-console.log(interpolated)
+const sourceLocations = [
+    {
+        "label": "Delhi NCR Sector 28",
+        "localityId": "ZWL004455",
+        "latitude": 28.473457,
+    },
+    {
+        "label": "Delhi NCR Sector 43, Gurgaon",
+        "localityId": "ZWL007284",
+        "latitude": 28.454416,
+        "longitude": 77.08882,
+    },
+    {
+        "label": "Delhi NCR SUSHANT LOK 1",
+        "localityId": "ZWL008219",
+        "latitude": 28.467923,
+        "longitude": 77.07653,
+    }
+]
+
+//city_name,locality_name,device_date_time,rain_intensity,rain_accumulation,humidity,temperature,wind_direction,wind_speed
+//read csv file
+const dest_data = parseCSV('Testing/WeatherData/Sector27_20240606_20240805.csv');
+
+const source_data = [
+    parseCSV('Testing/WeatherData/Sector28_20240606_20240805.csv'),
+    parseCSV('Testing/WeatherData/Sector43Gurgaon_20240606_20240805.csv'),
+    parseCSV('Testing/WeatherData/SUSHANTLOK1_20240606_20240805.csv'),
+];
+
+const interpolated = {}
+const actual = {}
+
+for(let date in dest_data)
+{
+    const coords = [destLocation.latitude,destLocation.longitude];
+    
+    const localStationsData = [];
+
+    for(let i = 0; i < sourceLocations.length; i++)
+    {
+        const sourceLocation = sourceLocations[i];
+        const sourceData = source_data[i];
+        const sourceCoords = [sourceLocation.latitude,sourceLocation.longitude];
+        if(sourceData[date])
+        {
+            localStationsData.push({
+                ...sourceData[date],
+                latitude: sourceCoords[0],
+                longitude: sourceCoords[1],
+            });
+        }
+    }
+
+    interpolated[date] = interpolateWeatherData(coords,localStationsData);
+    actual[date] = dest_data[date];
+}
+
+
+
+const sampleCount = interpolated.length;
 
 const absError = {
     temperature: 0,

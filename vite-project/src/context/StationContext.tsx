@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { StationDataType } from '../types/types';
 import { button, useControls } from 'leva';
 
@@ -13,6 +13,10 @@ export function StationProvider(props: { children: React.ReactNode }) {
     useControls({ "Simulate API Call": button(() => { fetchWeatherData() }) });
 
     const [localStationsData, setLocalStationsData] = useState<StationDataType[]>([]);
+
+    useEffect(() => {
+        console.log(localStationsData)
+    }, [localStationsData]);
 
     function fetchWeatherData()
     {

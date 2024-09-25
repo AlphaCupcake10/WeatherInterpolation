@@ -1,1 +1,1 @@
-wind_direction
+    console.log(temperature,humidity,wind_u,wind_v,rain_intensity,rain_accumulation);

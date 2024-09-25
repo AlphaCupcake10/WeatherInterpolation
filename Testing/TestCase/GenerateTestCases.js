@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-fs.readFile('oye.json', 'utf8', (err, data) => {
+fs.readFile('Testing\\TestCase\\oye.json', 'utf8', (err, data) => {
     if (err) {
         console.error(err);
         return;
@@ -8,10 +8,10 @@ fs.readFile('oye.json', 'utf8', (err, data) => {
 
     const locations = JSON.parse(data);
 
-    const thresholdDistance = .05; // Kilometers
+    const thresholdDistance = 1; // Kilometers
     const thresholdAngle = thresholdDistance / 111;// 1 degree = 111 km
 
-    const radiusKM = 15;
+    const radiusKM = 2;
     const radiusAngle = radiusKM / 111;
 
     const result = [];
